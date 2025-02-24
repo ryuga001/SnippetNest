@@ -73,7 +73,7 @@ const Hero = () => {
                         variant="outline"
                         asChild
                     >
-                        <Link href="/templates">Browse Templates</Link>
+                        <Link href="/snippets">Explore Snippets</Link>
                     </Button>
                 </motion.div>
             </motion.div>

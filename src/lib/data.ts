@@ -87,6 +87,7 @@ export default function Blog() {
 ];
 
 
+
 export const featuredSnippets = snippets.slice(0, 3);
 
 

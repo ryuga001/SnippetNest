@@ -1,5 +1,6 @@
 "use client";
 
+import SnippetCard from "@/components/template_card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,10 +10,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { categories, snippets } from "@/lib/data";
-import { Search, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
-import SnippetCard from "@/components/template_card";
 import {
     Sheet,
     SheetContent,
@@ -20,7 +17,11 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import SectionWrapper from "@/hoc/sectionWrapper";
+import { categories, snippets } from "@/lib/data";
 import { Snippet } from "@/lib/types";
+import { Search, SignalMedium, SlidersHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function SnippetsPage() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -50,104 +51,114 @@ export default function SnippetsPage() {
     // const sortedSnippets = sortSnippets(filteredSnippets);
 
     return (
-        <main className="min-h-screen py-12">
-            <div className="container px-4 mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                    <h1 className="text-3xl font-bold">Browse Snippets</h1>
-                    <div className="flex items-center gap-4 w-full md:w-auto">
-                        <div className="relative flex-1 md:w-80">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search snippets..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9"
-                            />
+
+        <SectionWrapper>
+
+            <main className="min-h-screen py-12">
+
+                <div className="container px-4 mx-auto">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                        <div className="flex flex-col gap-3 wrap max-w-30">
+                            <h1 className="text-3xl font-bold">Explore Snippets</h1>
+                            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis, vitae. Error, deleniti.</p>
                         </div>
-                        <Sheet>
-                            <SheetTrigger asChild>
-                                <Button variant="outline" className="md:hidden">
-                                    <SlidersHorizontal className="w-4 h-4" />
-                                </Button>
-                            </SheetTrigger>
-                            <SheetContent>
-                                <SheetHeader>
-                                    <SheetTitle>Filters</SheetTitle>
-                                </SheetHeader>
-                                <div className="flex flex-col gap-4 mt-4">
-                                    <div>
-                                        <label className="text-sm font-medium mb-2 block">
-                                            Category
-                                        </label>
-                                        <Select
-                                            value={selectedCategory}
-                                            onValueChange={setSelectedCategory}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select category" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {categories.map((category) => (
-                                                    <SelectItem key={category} value={category}>
-                                                        {category}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                        <div className="flex items-center  gap-4 w-full md:w-auto">
+                            <div className="bg-white rounded-md relative flex-1 md:w-80">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search snippets..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-9"
+                                />
+                            </div>
+                            <Sheet>
+                                <SheetTrigger asChild>
+                                    <Button variant="outline" className="md:hidden">
+                                        <SlidersHorizontal className="w-4 h-4" />
+                                    </Button>
+                                </SheetTrigger>
+                                <SheetContent>
+                                    <SheetHeader>
+                                        <SheetTitle>Filters</SheetTitle>
+                                    </SheetHeader>
+                                    <div className="flex flex-col gap-4 mt-4">
+                                        <div>
+                                            <label className="text-sm font-medium mb-2 block">
+                                                Category
+                                            </label>
+                                            <Select
+                                                value={selectedCategory}
+                                                onValueChange={setSelectedCategory}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select category" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {categories.map((category) => (
+                                                        <SelectItem key={category} value={category}>
+                                                            {category}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium mb-2 block">
+                                                Sort by
+                                            </label>
+                                            <Select value={sortBy} onValueChange={setSortBy}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Sort by" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="newest">Newest</SelectItem>
+                                                    <SelectItem value="popular">Most Popular</SelectItem>
+                                                    <SelectItem value="rating">Highest Rated</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="text-sm font-medium mb-2 block">
-                                            Sort by
-                                        </label>
-                                        <Select value={sortBy} onValueChange={setSortBy}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Sort by" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="newest">Newest</SelectItem>
-                                                <SelectItem value="popular">Most Popular</SelectItem>
-                                                <SelectItem value="rating">Highest Rated</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
+                                </SheetContent>
+                            </Sheet>
+                        </div>
+                    </div>
+
+                    <div className=" hidden md:flex items-center gap-4 mb-8">
+                        <Select value={selectedCategory} onValueChange={setSelectedCategory} >
+                            <SelectTrigger className="w-40 bg-white">
+                                <SelectValue placeholder="Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {categories.map((category) => (
+                                    <SelectItem key={category} value={category}>
+                                        {category}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                            <SelectTrigger className="w-40 bg-white">
+                                <SelectValue placeholder="Sort by" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="newest">Newest</SelectItem>
+                                <SelectItem value="popular">Most Popular</SelectItem>
+                                <SelectItem value="rating">Highest Rated</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-white p-16 rounded-lg">
+                        {
+                            snippets.map((snippet: Snippet) => (
+                                <SnippetCard key={snippet.id} snippet={snippet} />
+                            ))
+                        }
                     </div>
                 </div>
-
-                <div className="hidden md:flex items-center gap-4 mb-8">
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                        <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {categories.map((category) => (
-                                <SelectItem key={category} value={category}>
-                                    {category}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Sort by" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="newest">Newest</SelectItem>
-                            <SelectItem value="popular">Most Popular</SelectItem>
-                            <SelectItem value="rating">Highest Rated</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredSnippets.map((snippet: Snippet) => (
-                        <SnippetCard key={snippet.id} snippet={snippet} />
-                    ))}
-                </div>
-            </div>
-        </main>
+            </main>
+        </SectionWrapper>
     );
 }
