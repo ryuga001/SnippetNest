@@ -7,8 +7,7 @@ import { Heart } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Snippet } from "@/lib/types";
-
-
+import { motion } from "framer-motion";
 
 interface SnippetCardProps {
     snippet: Snippet;
@@ -18,52 +17,51 @@ export default function SnippetCard({ snippet }: SnippetCardProps) {
     const [isLiked, setIsLiked] = useState(snippet.liked);
 
     return (
-        <Card className="overflow-hidden group">
-            <CardHeader className="p-0">
-                <div className="relative aspect-video overflow-hidden">
-                    <img
-                        src={snippet.cover_image}
-                        alt={snippet.title}
-                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm hover:bg-background/90"
-                        onClick={() => setIsLiked(!isLiked)}
-                    >
-                        <Heart
-                            className={`w-5 h-5 ${isLiked ? "fill-destructive text-destructive" : ""}`}
+        <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full"
+        >
+            <Card className="overflow-hidden group border border-gray-700 shadow-md bg-gray-800 max-w-xl">
+                <CardHeader className="p-4 flex flex-col">
+                    <h3 className="font-semibold text-xl text-white">{snippet.title}</h3>
+                    <p className="text-md text-gray-200">{snippet.description}</p>
+                </CardHeader>
+
+                <CardContent className="p-4">
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mb-4 h-[40px]">
+                        {snippet.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-sm">
+                                {tag}
+                            </Badge>
+                        ))}
+                    </div>
+
+                </CardContent>
+
+                <CardFooter className=" p-4 flex bg-black justify-between items-center">
+                    {/* Author */}
+                    <div className="flex items-center gap-3 bg-black">
+                        <img
+                            src={snippet.author.avatar}
+                            alt={snippet.author.username}
+                            className="w-8 h-8 rounded-full object-cover"
                         />
-                    </Button>
-                </div>
-            </CardHeader>
-            <CardContent className="p-4">
-                <h3 className="font-semibold text-lg mb-2">{snippet.title}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{snippet.description}</p>
+                        <span className="text-sm text-gray-200">
+                            by {snippet.author.username}
+                        </span>
+                    </div>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                    {snippet.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary">
-                            {tag}
-                        </Badge>
-                    ))}
-                </div>
 
-                <div className="flex items-center gap-3">
-                    <img
-                        src={snippet.author.avatar}
-                        alt={snippet.author.username}
-                        className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <span className="text-sm text-muted-foreground">by {snippet.author.username}</span>
-                </div>
-            </CardContent>
-            <CardFooter className="p-4 pt-0 flex justify-between items-center">
-                <Link href={`/template/${snippet.id}`}>
-                    <Button variant="outline">View Snippet</Button>
-                </Link>
-            </CardFooter>
-        </Card>
+                    {/* View Snippet */}
+                    <Link href={`/snippet/${snippet.id}`}>
+                        <Button variant="outline" >
+                            View Snippet
+                        </Button>
+                    </Link>
+                </CardFooter>
+            </Card>
+        </motion.div>
     );
 }

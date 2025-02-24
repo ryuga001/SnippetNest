@@ -1,28 +1,38 @@
-import React from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { Button } from './ui/button'
-import Link from 'next/link'
+import React from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const Navbar = () => {
 
     return (
-        <nav className='bg-gray-200 flex w-full justify-between p-2'>
-            <aside className='flex'>
-                <Avatar>
+        <nav className="bg-gray-800 backdrop-blur-lg shadow-lg fixed w-full top-0 left-0 flex items-center justify-between py-4 px-6 md:px-10 z-50">
+            {/* Logo */}
+            <aside className="flex items-center">
+                <Avatar className="w-10 h-10">
                     <AvatarImage src="https://plus.unsplash.com/premium_photo-1671679269810-63dd9438ca81?q=80&w=1961&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
                     <AvatarFallback>Logo</AvatarFallback>
                 </Avatar>
-                {/* <Button variant="ghost">Store</Button> */}
-                <Button variant="link">Home</Button>
-                <Button variant="link">Templates</Button>
+                <span className="ml-3 text-xl font-bold text-gray-100">SnippetNest</span>
             </aside>
-            <main>
-                <Button asChild>
+
+            {/* Navigation Links */}
+            <main className="flex gap-4 items-center flex-wrap">
+                <Link href="/" className="text-gray-300 hover:text-white transition-all text-lg font-medium">
+                    Home
+                </Link>
+                <Link href="/snippets" className="text-gray-300 hover:text-white transition-all text-lg font-medium">
+                    Templates
+                </Link>
+                <Button asChild className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md">
+                    <Link href="/generate">AI Generator</Link>
+                </Button>
+                <Button asChild className="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-lg shadow-md">
                     <Link href="/login">Login</Link>
                 </Button>
             </main>
         </nav>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

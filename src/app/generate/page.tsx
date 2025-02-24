@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Clipboard } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 const predefinedPrompts = [
     "Create a modern business landing page with a hero section and features showcase",
@@ -18,10 +19,10 @@ export default function AIGeneratorPage() {
     const [prompt, setPrompt] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedCode, setGeneratedCode] = useState("");
-
+    const scrollRef = useRef<HTMLDivElement | null>(null);
     const handleGenerate = async () => {
         setIsGenerating(true);
-        setGeneratedCode(""); // Clear previous code
+        setGeneratedCode("");
 
         try {
             const response = await fetch("/api/generate", {
@@ -34,6 +35,11 @@ export default function AIGeneratorPage() {
             if (data.snippet) {
                 const extractedCode = extractCodeBlock(data.snippet);
                 setGeneratedCode(extractedCode || "No valid code found.");
+                setTimeout(() => {
+                    if (scrollRef.current) {
+                        scrollRef.current.scrollIntoView({ behavior: "smooth" });
+                    }
+                }, 100);
             } else {
                 setGeneratedCode("No code generated.");
             }
@@ -45,12 +51,10 @@ export default function AIGeneratorPage() {
         }
     };
 
-
     const extractCodeBlock = (text: string) => {
         const codeMatch = text.match(/```(?:tsx|jsx|javascript|html|css|.*)?\n([\s\S]*?)\n```/);
         return codeMatch ? codeMatch[1].trim() : text.trim();
     };
-
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(generatedCode);
@@ -58,32 +62,39 @@ export default function AIGeneratorPage() {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-black text-white py-16">
-            <div className="container px-6 mx-auto max-w-4xl">
-                <div className="text-center mb-12">
-                    <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-300">
-                        AI Snippet Generator
-                    </h1>
-                    <p className="text-lg text-gray-300">
-                        Describe your dream website, and let AI create it for you!
-                    </p>
-                </div>
+        <main className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white py-16 flex flex-col items-center justify-center px-4">
+            <motion.div
+                initial={{ opacity: 0, y: -30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center mb-12"
+            >
+                <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-300">
+                    AI Snippet Generator
+                </h1>
+                <p className="text-lg text-gray-300">
+                    Describe your dream website, and let AI create it for you!
+                </p>
+            </motion.div>
 
-
-                <Card className="p-8 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg">
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+                <Card className="p-8 bg-gray-900 bg-opacity-60 backdrop-blur-lg border border-gray-700 rounded-2xl shadow-xl">
                     <div className="space-y-6">
                         <div>
                             <label className="text-sm font-semibold mb-2 block text-gray-400">
                                 Describe your website
                             </label>
                             <Textarea
-                                placeholder="E.g., I need a modern business landing page with a hero section, features showcase, and contact form..."
+                                placeholder="E.g., A sleek portfolio for a photographer with a gallery grid..."
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
-                                className="h-32 bg-gray-800 text-white border-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+                                className="h-32 bg-gray-800 text-white border-none focus:ring-2 focus:ring-blue-500 rounded-lg transition-all"
                             />
                         </div>
-
 
                         <div>
                             <label className="text-sm font-semibold mb-2 block text-gray-400">
@@ -102,7 +113,6 @@ export default function AIGeneratorPage() {
                                 ))}
                             </div>
                         </div>
-
 
                         <Button
                             className="w-full bg-blue-600 hover:bg-blue-700 transition-all py-3 text-lg font-semibold rounded-lg"
@@ -124,34 +134,31 @@ export default function AIGeneratorPage() {
                         </Button>
                     </div>
                 </Card>
+            </motion.div>
 
-
-                {generatedCode && (
-                    <div className="mt-10">
-                        <Card className="p-6 bg-gray-900 border border-gray-700 rounded-2xl shadow-lg">
-                            <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-2xl font-semibold text-blue-400">Generated Code</h2>
-                                <Button
-                                    variant="ghost"
-                                    className="text-gray-400 hover:text-white transition-all flex items-center"
-                                    onClick={copyToClipboard}
-                                >
-                                    <Clipboard className="w-5 h-5 mr-2" />
-                                    Copy
-                                </Button>
-                            </div>
-                            <pre className="bg-gray-800 text-green-400 p-4 rounded-lg overflow-x-auto text-sm border border-gray-700">
-                                <code>{generatedCode}</code>
-                            </pre>
-                        </Card>
-
-
-                        <div className="mt-6">
-                            <CodePreview code={generatedCode} />
+            {generatedCode && (
+                <motion.div ref={scrollRef}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6 }}
+                    className="w-screen p-10 "
+                >
+                    <Card className="p-6 bg-gray-900 bg-opacity-60 backdrop-blur-lg border border-gray-700 rounded-2xl shadow-xl">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-semibold text-blue-400">Generated Code</h2>
+                            <Button
+                                variant="ghost"
+                                className="text-gray-400 hover:text-gray-800 transition-all flex items-center"
+                                onClick={copyToClipboard}
+                            >
+                                <Clipboard className="w-5 h-5 mr-2" />
+                                Copy
+                            </Button>
                         </div>
-                    </div>
-                )}
-            </div>
+                        <CodePreview code={generatedCode} />
+                    </Card>
+                </motion.div>
+            )}
         </main>
     );
 }

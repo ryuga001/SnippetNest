@@ -1,6 +1,9 @@
+import FeaturedSnippets from '@/components/featuredSnippet';
+import Footer from '@/components/footer';
 import Hero from '@/components/Hero';
 import SnippetCard from '@/components/template_card';
 import { Button } from '@/components/ui/button';
+import SectionWrapper from '@/hoc/sectionWrapper';
 import { featuredSnippets } from '@/lib/data';
 import { ArrowRight, Sparkles, Star } from 'lucide-react';
 import Link from 'next/link';
@@ -8,52 +11,40 @@ import Link from 'next/link';
 const Home = () => {
   return (
     <div>
-      <section>
+      <SectionWrapper>
         <Hero />
-      </section>
+      </SectionWrapper>
 
       {/* Featured Snippets Section */}
-      <section className="py-20 bg-gray-300">
-        <div className="container px-4 mx-auto">
-          <div className="flex justify-between items-center mb-12">
-            <h2 className="text-3xl font-bold">Featured Snippets</h2>
-            <Link href="/snippets">
-              <Button variant="ghost">
-                View All
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredSnippets.map((snippet: any) => (
-              <SnippetCard key={snippet.id} snippet={snippet} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <SectionWrapper>
+        <FeaturedSnippets />
+      </SectionWrapper>
 
-      {/* AI Generator Section */}
-      <section className="py-20 bg-primary/5">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6">Not finding what you need?</h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Let our AI create a custom snippet tailored to your specific requirements.
-              Just describe what you need, and we'll generate it for you.
-            </p>
-            <Link href="/ai-generator">
-              <Button size="lg" className="gap-2">
-                Try AI Generator
-                <Sparkles className="w-4 h-4" />
-              </Button>
-            </Link>
+      <SectionWrapper>
+
+        <div className="py-20 bg-white">
+          <div className="container px-4 mx-auto">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-3xl font-bold mb-6">Not finding what you need?</h2>
+              <p className="text-xl text-muted-foreground mb-8">
+                Let our AI create a custom snippet tailored to your specific requirements.
+                Just describe what you need, and we'll generate it for you.
+              </p>
+              <Link href="/generate">
+                <Button size="lg" className="gap-2">
+                  Try AI Generator
+                  <Sparkles className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
-      </section>
+      </SectionWrapper>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-background">
-        <div className="container px-4 mx-auto">
+      <SectionWrapper>
+
+        <div className="container px-4 mx-auto mb-30">
           <h2 className="text-3xl font-bold text-center mb-12">What Our Users Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
@@ -78,7 +69,10 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </section>
+      </SectionWrapper>
+      <footer className='mt-30'>
+        <Footer />
+      </footer>
     </div>
   );
 };
