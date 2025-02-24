@@ -25,7 +25,7 @@ const Hero = () => {
     }, []);
 
     return (
-        <div className="relative w-full h-[70vh] mt-16 overflow-hidden">
+        <div className="relative w-full h-[70vh]  overflow-hidden">
             {/* Image Slider with Smooth Transitions */}
             <AnimatePresence mode="wait">
                 <motion.img

@@ -70,9 +70,6 @@ const Home = () => {
           </div>
         </div>
       </SectionWrapper>
-      <footer className='mt-30'>
-        <Footer />
-      </footer>
     </div>
   );
 };
