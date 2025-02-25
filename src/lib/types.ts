@@ -22,3 +22,9 @@ export interface User {
     role: 'user' | 'admin';
 }
 
+export interface GeneratedCodeType {
+    title: string,
+    description: string,
+    language: string,
+    source_code: string,
+}

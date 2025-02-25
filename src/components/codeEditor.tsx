@@ -26,9 +26,11 @@ const languageMap: Record<string, number> = {
     "swift": 83,
     "kotlin": 78,
 };
-
-export default function CodeEditor() {
-    const [code, setCode] = useState(defaultCode);
+interface CodeEditorProps {
+    sourceCode?: string,
+}
+export default function CodeEditor({ sourceCode }: CodeEditorProps) {
+    const [code, setCode] = useState(sourceCode ? sourceCode : defaultCode);
     const [output, setOutput] = useState<string | null>(null);
     const [isRunning, setIsRunning] = useState(false);
     const [language, setLanguage] = useState("c++");

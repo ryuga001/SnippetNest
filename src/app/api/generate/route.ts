@@ -29,10 +29,13 @@ export async function POST(req: Request) {
         //     generationConfig,
         //     history: [],
         // });
-
-        const result = await model.generateContent(
-            `Generate a React component based on this description:\n${prompt}`
-        );
+        const query = `Generate a Code based on this description. If the language is not mentioned, then create a React component based on the description. The output should be strictly in this format:
+            "title": "string",
+            "description": "string",
+            "language": "string",
+            "source_code": "string"
+        prompt: ${prompt}`;
+        const result = await model.generateContent(query);
 
         const generatedCode = result.response.text();
 
