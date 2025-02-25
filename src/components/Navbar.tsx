@@ -10,7 +10,7 @@ const Navbar = () => {
             {/* Logo */}
             <aside className="flex items-center">
                 <Avatar className="w-10 h-10">
-                    <AvatarImage src="./logo.png" />
+                    <AvatarImage src="../logo.png" />
                     <AvatarFallback>Logo</AvatarFallback>
                 </Avatar>
                 <span className="ml-3 text-xl font-bold text-gray-100">SnippetNest</span>
@@ -27,9 +27,9 @@ const Navbar = () => {
                 <Button asChild className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md">
                     <Link href="/generate">AI Generator</Link>
                 </Button>
-                <Button asChild className="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-lg shadow-md">
+                {/* <Button asChild className="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-lg shadow-md">
                     <Link href="/login">Login</Link>
-                </Button>
+                </Button> */}
             </main>
         </nav>
     );

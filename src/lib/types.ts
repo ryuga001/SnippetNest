@@ -3,9 +3,9 @@ export interface Snippet {
     title: string;
     description: string;
     category: string[];
+    language: string;
     tags: string[];
     source_code: string;
-    cover_image: string;
     author: {
         author_id: string;
         username: string;

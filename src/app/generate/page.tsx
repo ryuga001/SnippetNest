@@ -1,29 +1,34 @@
 "use client";
 
+import CodeEditor from "@/components/codeEditor";
 import CodePreview from "@/components/codePreview";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Clipboard } from "lucide-react";
+import SectionWrapper from "@/hoc/sectionWrapper";
+import { motion } from "framer-motion";
+import { Clipboard, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
-
-const predefinedPrompts = [
-    "Create a modern business landing page with a hero section and features showcase",
-    "Design a minimalist portfolio for a photographer with a gallery grid",
-    "Generate an e-commerce homepage with featured products and categories",
-];
-
 export default function AIGeneratorPage() {
     const [prompt, setPrompt] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedCode, setGeneratedCode] = useState("");
     const scrollRef = useRef<HTMLDivElement | null>(null);
+    const [progress, setProgress] = useState<number>(0);
+    const interval = setInterval(() => {
+        setProgress((prev) => {
+            if (prev >= 100) {
+                clearInterval(interval);
+                return 100;
+            }
+            return prev + Math.ceil((100 - prev) / 10);
+        });
+    }, 300);
     const handleGenerate = async () => {
         setIsGenerating(true);
         setGeneratedCode("");
-
+        setProgress(0);
         try {
             const response = await fetch("/api/generate", {
                 method: "POST",
@@ -36,9 +41,7 @@ export default function AIGeneratorPage() {
                 const extractedCode = extractCodeBlock(data.snippet);
                 setGeneratedCode(extractedCode || "No valid code found.");
                 setTimeout(() => {
-                    if (scrollRef.current) {
-                        scrollRef.current.scrollIntoView({ behavior: "smooth" });
-                    }
+                    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
                 }, 100);
             } else {
                 setGeneratedCode("No code generated.");
@@ -48,6 +51,11 @@ export default function AIGeneratorPage() {
             setGeneratedCode("Error generating code.");
         } finally {
             setIsGenerating(false);
+            clearInterval(interval);
+            setProgress(100);
+            setTimeout(() => {
+                setIsGenerating(false);
+            }, 500);
         }
     };
 
@@ -62,103 +70,115 @@ export default function AIGeneratorPage() {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e] text-white py-16 flex flex-col items-center justify-center px-4">
-            <motion.div
-                initial={{ opacity: 0, y: -30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-center mb-12"
-            >
-                <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-300">
-                    AI Snippet Generator
-                </h1>
-                <p className="text-lg text-gray-300">
-                    Describe your dream website, and let AI create it for you!
-                </p>
-            </motion.div>
+        <SectionWrapper>
+            <div className="bg-gray-800 mx-16 p-12 rounded-lg shadow-xl">
+                <motion.div
+                    initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="text-center flex flex-col items-center gap-4 mb-12"
+                >
+                    {/* Animated AI GIF */}
+                    <motion.img
+                        src="/chatBot.gif"
+                        alt="AI Bot"
+                        className="w-24 h-24 md:w-32 md:h-32 drop-shadow-lg"
+                        initial={{ rotate: -10, scale: 0.8, opacity: 0 }}
+                        animate={{ rotate: 0, scale: 1, opacity: 1 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                    />
 
-            <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-                <Card className="p-8 bg-gray-900 bg-opacity-60 backdrop-blur-lg border border-gray-700 rounded-2xl shadow-xl">
-                    <div className="space-y-6">
-                        <div>
-                            <label className="text-sm font-semibold mb-2 block text-gray-400">
-                                Describe your website
-                            </label>
-                            <Textarea
-                                placeholder="E.g., A sleek portfolio for a photographer with a gallery grid..."
-                                value={prompt}
-                                onChange={(e) => setPrompt(e.target.value)}
-                                className="h-32 bg-gray-800 text-white border-none focus:ring-2 focus:ring-blue-500 rounded-lg transition-all"
-                            />
-                        </div>
+                    {/* AI Generator Title */}
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-blue-400 drop-shadow-xl">
+                        AI Snippet Generator
+                    </h1>
 
-                        <div>
-                            <label className="text-sm font-semibold mb-2 block text-gray-400">
-                                Try these examples
-                            </label>
-                            <div className="flex flex-wrap gap-3">
-                                {predefinedPrompts.map((predefinedPrompt) => (
-                                    <Button
-                                        key={predefinedPrompt}
-                                        variant="outline"
-                                        onClick={() => setPrompt(predefinedPrompt)}
-                                        className="text-sm border-gray-600 hover:bg-gray-800 transition-all"
-                                    >
-                                        {predefinedPrompt}
-                                    </Button>
-                                ))}
+                    {/* Subheading with a subtle fade-in effect */}
+                    <motion.p
+                        className="text-lg md:text-xl text-gray-300 max-w-2xl mt-2 leading-relaxed"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 1 }}
+                    >
+                        Describe your dream website, and let AI create it for you!
+                    </motion.p>
+                </motion.div>
+
+
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="max-w-3xl mx-auto"
+                >
+                    <Card className="p-8 bg-gray-900 bg-opacity-70 backdrop-blur-md border border-gray-700 rounded-2xl shadow-2xl">
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-sm font-semibold mb-2 block text-gray-400">
+                                    Describe your website
+                                </label>
+                                <Textarea
+                                    placeholder="E.g., A sleek portfolio for a photographer with a gallery grid..."
+                                    value={prompt}
+                                    onChange={(e) => setPrompt(e.target.value)}
+                                    className="h-32 bg-gray-800 text-white border-none focus:ring-2 focus:ring-blue-500 rounded-lg transition-all shadow-lg"
+                                />
                             </div>
-                        </div>
 
-                        <Button
-                            className="w-full bg-blue-600 hover:bg-blue-700 transition-all py-3 text-lg font-semibold rounded-lg"
-                            size="lg"
-                            onClick={handleGenerate}
-                            disabled={!prompt || isGenerating}
-                        >
-                            {isGenerating ? (
-                                <>
-                                    <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                                    Generating...
-                                </>
-                            ) : (
-                                <>
-                                    <Sparkles className="w-5 h-5 mr-2" />
-                                    Generate Template
-                                </>
-                            )}
-                        </Button>
-                    </div>
-                </Card>
-            </motion.div>
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                <Button
+                                    className="w-full py-3 text-lg font-semibold rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all"
+                                    size="lg"
+                                    onClick={handleGenerate}
+                                    disabled={!prompt || isGenerating}
+                                >
+                                    {isGenerating ? (
+                                        <>
+                                            <Sparkles className="w-5 h-5 mr-2 animate-spin" />
+                                            Generating... {progress}%
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Sparkles className="w-5 h-5 mr-2" />
+                                            Generate ✨
+                                        </>
+                                    )}
+                                </Button>
+                            </motion.div>
+                        </div>
+                    </Card>
+                </motion.div>
+            </div>
 
             {generatedCode && (
-                <motion.div ref={scrollRef}
+
+                <motion.div
+                    ref={scrollRef}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.6 }}
-                    className="w-screen p-10 "
+                    className="mx-16 p-12 rounded-lg shadow-xl bg-gray-800 mt-3"
                 >
-                    <Card className="p-6 bg-gray-900 bg-opacity-60 backdrop-blur-lg border border-gray-700 rounded-2xl shadow-xl">
+                    <Card className="p-6 bg-gray-900 bg-opacity-70 backdrop-blur-md border border-gray-700 rounded-2xl shadow-2xl">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-2xl font-semibold text-blue-400">Generated Code</h2>
-                            <Button
-                                variant="ghost"
-                                className="text-gray-400 hover:text-gray-800 transition-all flex items-center"
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
                                 onClick={copyToClipboard}
+                                className="text-gray-400 hover:text-white transition-all flex items-center"
                             >
                                 <Clipboard className="w-5 h-5 mr-2" />
                                 Copy
-                            </Button>
+                            </motion.button>
                         </div>
                         <CodePreview code={generatedCode} />
                     </Card>
                 </motion.div>
             )}
-        </main>
+
+            <CodeEditor />
+
+        </SectionWrapper>
     );
 }

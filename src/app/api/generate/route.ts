@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GEMINIA_API_KEY!;
 const genAI = new GoogleGenerativeAI(apiKey);
-console.log(apiKey);
+
 const model = genAI.getGenerativeModel({
     model: "gemini-2.0-flash",
 });
