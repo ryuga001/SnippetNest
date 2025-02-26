@@ -6,8 +6,8 @@ export const snippets: Snippet[] = [
         id: '1',
         title: 'Modern Portfolio',
         description: 'A sleek portfolio template for creative professionals',
-        category: ['Portfolio'],
         tags: ['Minimal', 'Dark Mode', 'Responsive'],
+        language: "react",
         source_code: `
 import React from "react";
 
@@ -26,20 +26,19 @@ export default function Portfolio() {
         </div>
     );
 }`,
-        cover_image: 'https://images.unsplash.com/photo-1522542550221-31fd19575a2d?q=80&w=1470&fit=crop',
         author: {
             author_id: '101',
             username: 'Alex Chen',
             avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1470&fit=crop'
         },
-        liked: true
+
     },
     {
         id: '2',
         title: 'E-commerce Pro',
         description: 'Complete e-commerce solution with modern design',
-        category: ['E-commerce'],
         tags: ['Shop', 'Cart', 'Dashboard'],
+        language: "react",
         source_code: `
 import React from "react";
 
@@ -51,20 +50,19 @@ export default function ECommerce() {
         </div>
     );
 }`,
-        cover_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1470&fit=crop',
+
         author: {
             author_id: '102',
             username: 'Sarah Miller',
             avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1470&fit=crop'
         },
-        liked: false
     },
     {
         id: '3',
         title: 'Blog Master',
         description: 'Professional blog template with multiple layouts',
-        category: ['Blog'],
         tags: ['Content', 'SEO', 'Responsive'],
+        language: "react",
         source_code: `
 import React from "react";
 
@@ -76,13 +74,11 @@ export default function Blog() {
         </div>
     );
 }`,
-        cover_image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1470&fit=crop',
         author: {
             author_id: '103',
             username: 'Mike Johnson',
             avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1470&fit=crop'
         },
-        liked: true
     }
 ];
 
@@ -107,6 +103,6 @@ export const mockUser: User = {
     username: 'JohnDoe',
     email: 'john@example.com',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1470&fit=crop',
-    role: 'user'
+    // role: 'user'
 };
 

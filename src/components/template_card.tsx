@@ -14,7 +14,6 @@ interface SnippetCardProps {
 }
 
 export default function SnippetCard({ snippet }: SnippetCardProps) {
-    const [isLiked, setIsLiked] = useState(snippet.liked);
 
     return (
         <motion.div

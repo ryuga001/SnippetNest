@@ -2,7 +2,6 @@ export interface Snippet {
     id: string;
     title: string;
     description: string;
-    category: string[];
     language: string;
     tags: string[];
     source_code: string;
@@ -11,7 +10,6 @@ export interface Snippet {
         username: string;
         avatar: string;
     };
-    liked: boolean;
 }
 
 export interface User {
@@ -19,12 +17,12 @@ export interface User {
     username: string;
     email: string;
     avatar: string;
-    role: 'user' | 'admin';
 }
 
 export interface GeneratedCodeType {
     title: string,
     description: string,
     language: string,
+    // tags : string [],
     source_code: string,
 }

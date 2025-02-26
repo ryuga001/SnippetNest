@@ -1,14 +1,25 @@
+"use client";
 import FeaturedSnippets from '@/components/featuredSnippet';
 import Footer from '@/components/footer';
 import Hero from '@/components/Hero';
 import SnippetCard from '@/components/template_card';
 import { Button } from '@/components/ui/button';
 import SectionWrapper from '@/hoc/sectionWrapper';
-import { featuredSnippets } from '@/lib/data';
+import { featuredSnippets, snippets } from '@/lib/data';
+import { useAppDispatch, useAppSelector } from '@/redux/redux-hooks';
+import { setSnippets } from '@/redux/slice/snippetSlice';
 import { ArrowRight, Sparkles, Star } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 const Home = () => {
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setSnippets(snippets));
+  }, [])
+
   return (
     <div>
       <SectionWrapper>
