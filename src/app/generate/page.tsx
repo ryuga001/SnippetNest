@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import SectionWrapper from "@/hoc/sectionWrapper";
-import { GeneratedCodeType } from "@/lib/types";
+import { showToast } from "@/lib";
+import { GeneratedCodeType, Snippet } from "@/lib/types";
+import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
+import { addSnippet } from "@/redux/slice/snippetSlice";
 import { motion } from "framer-motion";
 import { Clipboard, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
@@ -17,6 +20,7 @@ export default function AIGeneratorPage() {
     const [generatedCode, setGeneratedCode] = useState<GeneratedCodeType | null>(null);
     const scrollRef = useRef<HTMLDivElement | null>(null);
     const [progress, setProgress] = useState<number>(0);
+    const { user, isLoggedIn } = useAppSelector(state => state.user);
     const interval = setInterval(() => {
         setProgress((prev) => {
             if (prev >= 100) {
@@ -27,6 +31,10 @@ export default function AIGeneratorPage() {
         });
     }, 300);
     const handleGenerate = async () => {
+        if (!isLoggedIn) {
+            showToast("To Use This Feature You Must Login First", "info");
+            return;
+        }
         setIsGenerating(true);
         // setGeneratedCode("");
         setProgress(0);
@@ -71,12 +79,12 @@ export default function AIGeneratorPage() {
             }
 
             const data = JSON.parse(jsonMatch[0]);
-            if (data?.title && data?.description && data?.language && data?.source_code) {
+            if (data?.title && data?.description && data?.language && data?.sourceCode) {
                 setGeneratedCode({
                     title: data.title,
                     description: data.description,
                     language: data.language.toLowerCase(),
-                    source_code: extractCodeBlock(data.source_code),
+                    sourceCode: extractCodeBlock(data.sourceCode),
                 });
             } else {
                 console.error("Invalid response format");
@@ -95,10 +103,46 @@ export default function AIGeneratorPage() {
 
     const copyToClipboard = () => {
         if (!generatedCode) return;
-        navigator.clipboard.writeText(generatedCode.source_code);
+        navigator.clipboard.writeText(generatedCode.sourceCode);
         toast.success("Code copied to clipboard!");
     };
 
+    const dispatch = useAppDispatch();
+    const snippets = useAppSelector(state => state.snippets.snippets)
+    const handleMakeSnippetSubmit = () => {
+        if (!generatedCode) {
+            return;
+        }
+        console.log("generatedCode", generatedCode);
+        const snippetNew: Snippet = {
+            id: crypto.randomUUID(),
+            title: generatedCode?.title,
+            description: generatedCode?.description,
+            language: generatedCode?.language,
+            sourceCode: generatedCode?.sourceCode,
+            tags: ["AI Generated"],
+            author: {
+                id: user.id,
+                username: user.username,
+                avatar: user.avatar,
+            }
+        }
+        if (snippetNew) {
+            if (snippets.some(snippet => snippet.sourceCode === snippetNew.sourceCode)) {
+                alert("SNIPPET ALREADY EXISTS");
+            } else
+                dispatch(addSnippet(snippetNew));
+        }
+        // if(snippets.filter)
+        //     const isDuplicate = snippets.some(snippet => snippet.sourceCode === snippetNew.sourceCode);
+
+        // if (isDuplicate) {
+        //     console.log("This snippet already exists!");
+        // } else {
+        //     snippets.push(snippetNew);
+        //     console.log("Snippet added successfully.");
+        // }
+    }
     return (
         <SectionWrapper>
             <div className="bg-gray-800 mx-16 p-12 rounded-lg shadow-xl">
@@ -198,6 +242,7 @@ export default function AIGeneratorPage() {
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-2xl font-semibold text-blue-400">Generated Code</h2>
                                 <div className="flex gap-3">
+                                    <Button className="bg-orange-400 hover:bg-orange-500" variant="outline" onClick={handleMakeSnippetSubmit} >Make a Snippet</Button>
                                     <Button variant="outline">
                                         {generatedCode.language.toUpperCase()}
                                     </Button>
@@ -212,7 +257,7 @@ export default function AIGeneratorPage() {
                                     </motion.button>
                                 </div>
                             </div>
-                            {generatedCode.language === 'react' ? <CodePreview code={generatedCode?.source_code} /> : <CodeEditor sourceCode={generatedCode?.source_code} />}
+                            {generatedCode.language === 'react' ? <CodePreview code={generatedCode?.sourceCode} /> : <CodeEditor sourceCode={generatedCode?.sourceCode} />}
                         </Card>
                     </div>
 

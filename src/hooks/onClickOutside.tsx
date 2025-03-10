@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 
-export const useClickOutside = (modalRef: any, handleClose: () => void) => {
+export const useClickOutside = (modalRef: React.RefObject<HTMLDivElement | null>, handleClose: () => void) => {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+
+            if (modalRef.current && !modalRef.current?.contains(event.target as Node)) {
                 handleClose();
             }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [handleClose]);
+    }, [handleClose, modalRef]);
 
     return modalRef;
 };

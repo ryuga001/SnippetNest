@@ -1,5 +1,6 @@
 "use client";
 
+import EditSnippet from "@/components/Forms/editSnippet";
 import SnippetCard from "@/components/template_card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,15 +20,34 @@ import {
 } from "@/components/ui/sheet";
 import SectionWrapper from "@/hoc/sectionWrapper";
 import useSnippetFilters from "@/hooks/useSnippetFilter";
+import { GET_ALL_SNIPPETS_ADMIN } from "@/lib/services";
 import { Snippet } from "@/lib/types";
-import { useAppSelector } from "@/redux/redux-hooks";
-import { Search, SlidersHorizontal, RefreshCcw } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
+import { setSnippets } from "@/redux/slice/snippetSlice";
+import { useQuery } from "@apollo/client";
+import { RefreshCcw, Search, SlidersHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
+
+export interface openEditModalProps {
+    open: boolean,
+    snippet?: Snippet,
+}
 
 export default function SnippetsPage() {
     const languages = ["JavaScript", "TypeScript", "Python", "C++", "Java"];
-
+    const [openEditModal, setOpenEditModal] = useState<openEditModalProps>({
+        open: false
+    });
+    const dispatch = useAppDispatch();
+    const { data, loading } = useQuery(GET_ALL_SNIPPETS_ADMIN);
+    useEffect(() => {
+        if (!loading && data.getAllSnippets.snippets) {
+            dispatch(setSnippets(data.getAllSnippets.snippets));
+        }
+    }, [data]);
     // Retrieve snippets from Redux store
     const snippetsData = useAppSelector((state) => state.snippets);
+    const { filters, handleChange, resetFilters, filteredSnippets } = useSnippetFilters(snippetsData?.snippets || []);
 
     // Show loading if snippets are still being fetched
     if (snippetsData?.loading) {
@@ -35,7 +55,6 @@ export default function SnippetsPage() {
     }
 
     // Initialize filters
-    const { filters, handleChange, resetFilters, filteredSnippets } = useSnippetFilters(snippetsData?.snippets || []);
 
     return (
         <SectionWrapper>
@@ -191,7 +210,7 @@ export default function SnippetsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 bg-white p-6 rounded-lg">
                         {filteredSnippets.length > 0 ? (
                             filteredSnippets.map((snippet: Snippet) => (
-                                <SnippetCard key={snippet.id} snippet={snippet} />
+                                <SnippetCard key={snippet.id} setOpenEditModal={setOpenEditModal} snippet={snippet} />
                             ))
                         ) : (
                             <p className="text-center col-span-full text-gray-500">
@@ -201,6 +220,10 @@ export default function SnippetsPage() {
                     </div>
                 </div>
             </main>
+            {openEditModal.open && <EditSnippet snippet={openEditModal.snippet!} handleClose={() => setOpenEditModal({
+                open: false,
+                snippet: undefined
+            })} />}
         </SectionWrapper>
     );
 }

@@ -6,10 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { mockUser } from "@/lib/data";
-import { Snippet } from "@/lib/types";
-import { useAppDispatch } from "@/redux/redux-hooks";
+import { showToast } from "@/lib";
+import { CREATE_SNIPPET } from "@/lib/services";
+import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks";
 import { addSnippet } from "@/redux/slice/snippetSlice";
+import { useMutation } from "@apollo/client";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -17,26 +18,30 @@ import { Controller, useForm } from "react-hook-form";
 
 const languages = ["JavaScript", "TypeScript", "Python", "C++", "Java"];
 
+interface FormDataType {
+    title: string,
+    description?: string,
+    language: string,
+    sourceCode: string,
+    tags: string[],
+}
+
 export default function CreateSnippetForm({ handleClose }: { handleClose: () => void }) {
 
-    const currentUser = mockUser;
+    const { user } = useAppSelector(state => state.user);
     const {
         register,
         handleSubmit,
         control,
         setValue,
-        getValues,
         watch,
-    } = useForm<Snippet>({
+    } = useForm<FormDataType>({
         defaultValues: {
-            id: crypto.randomUUID(),
             language: languages[0],
             tags: [],
-            author: {
-                author_id: currentUser.id,
-                username: currentUser.username,
-                avatar: currentUser.avatar
-            }
+            sourceCode: "",
+            title: "",
+            description: "",
         },
     });
 
@@ -58,10 +63,37 @@ export default function CreateSnippetForm({ handleClose }: { handleClose: () => 
         setValue("tags", updatedTags);
     };
     const dispatch = useAppDispatch();
-    const onSubmit = (data: Snippet) => {
-        // console.log("Snippet Data:", data);
-        dispatch(addSnippet(data));
-        handleClose();
+
+    const [createSnippet] = useMutation(CREATE_SNIPPET);
+
+    const onSubmit = async (values: FormDataType) => {
+        try {
+            const res = await createSnippet({
+                variables: {
+                    input: values
+                }
+            })
+            if (res.data.createSnippet.success) {
+                const { description, ...rest } = values;
+                dispatch(addSnippet({
+                    id: res?.data?.createSnippet?.snippet?.id || crypto.randomUUID(),
+                    ...rest,
+                    description: description || "",
+                    author: {
+                        id: user.id,
+                        username: user.username,
+                        avatar: user.avatar
+                    }
+                }));
+                showToast(res.data.createSnippet.message, "success");
+                handleClose();
+            } else {
+                console.log("Cannot create a snippet ...");
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+        }
     };
 
     return (
@@ -113,7 +145,7 @@ export default function CreateSnippetForm({ handleClose }: { handleClose: () => 
                     </div>
 
                     {/* Source Code Editor */}
-                    <Textarea placeholder="Write your code here..." {...register("source_code", { required: true })} className="font-mono" />
+                    <Textarea placeholder="Write your code here..." {...register("sourceCode", { required: true })} className="font-mono" />
 
                     <Button type="submit" className="w-full">
                         Submit Snippet
