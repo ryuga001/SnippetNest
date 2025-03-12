@@ -26,18 +26,12 @@ export default function UsersPage() {
     if (error) return <p>Error fetching users: {error.message}</p>;
     return (
         <SectionWrapper>
-            <div className="container mx-6 py-8">
+            <div className="container py-8">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold flex items-center gap-2">
                         <Users className="h-6 w-6" />
                         User Management
                     </h1>
-                    <Link href="/admin/users/new">
-                        <Button>
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Add New User
-                        </Button>
-                    </Link>
                 </div>
 
                 <div className="bg-white rounded-lg shadow">
@@ -64,7 +58,12 @@ export default function UsersPage() {
 
                                     </TableCell>
 
-                                    <TableCell className="font-medium">{user.username}</TableCell>
+                                    <TableCell className="font-medium ">
+                                        <Button variant="link" className="hover:text-blue-500">
+                                            <Link href={`/profile/${user.id}`}>{user.username}</Link>
+                                        </Button>
+
+                                    </TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>
                                         <Badge className={"bg-gray-500 text-white"}>

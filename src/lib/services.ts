@@ -177,3 +177,66 @@ export const UPDATE_SNIPPET = gql`
   }
 }
 `
+// ** SUBMISSIONS ** // 
+
+export const CREATE_SUBMISSION = gql`
+  mutation CreateSubmission($input: createSubmissionInput!) {
+  createSubmission(input: $input) {
+    success,
+    message,
+    submission {
+      id,
+    problem {
+        id,
+    },
+    author {
+        id,
+    }
+    createdAt,
+    language,
+    status,
+    submittedCode
+    }    
+  }
+}
+`
+export const GET_SUBMISSION_USER = gql`
+  query GetAllSubmissionsByUser($userId: ID!) {
+  getAllSubmissionsByUser(userId: $userId) {
+    success,
+    submissions { 
+        id,
+      problem {
+          id,
+      },
+      author {
+          id,
+      }
+      language,
+      status,
+      submittedCode,
+    }
+  }
+}
+`
+
+
+// ** SOLUTION ** // 
+
+export const GET_SOLUTION = gql`
+query GetSolution($problemId: ID!) {
+  getSolution(problemId: $problemId) {
+    success,
+    message,
+    solution {
+      id,
+      explanation,
+      answers {
+        id,
+        language,
+        code 
+      }
+    }
+  }
+}
+`
