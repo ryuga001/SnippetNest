@@ -41,7 +41,8 @@ export const GET_ME = gql`
       id ,
       username,
       avatar,
-      email
+      email,
+      role
     }
   }
 }
@@ -235,6 +236,47 @@ query GetSolution($problemId: ID!) {
         id,
         language,
         code 
+      }
+    }
+  }
+}
+`
+// ** ADMIN ** //
+export const GET_DASHBOARD_DATA = gql`
+query GetDashboardData {
+  getDashboardData {
+    success
+    message
+    result {
+      stats {
+        totalUser
+        totalSnippet
+        totalProblem
+        todayTotalSubmission
+      }
+      monthlyStats {
+        monthlyRegisteredUser {
+          month
+          count
+        }
+        monthlyCreatedProblem {
+          month
+          count
+        }
+        monthlyCreatedSnippet {
+          month
+          count
+        }
+      }
+      weeklyStats {
+        weeklySubmissions {
+          day
+          count
+        }
+      }
+      tagDistribution {
+        name
+        count
       }
     }
   }

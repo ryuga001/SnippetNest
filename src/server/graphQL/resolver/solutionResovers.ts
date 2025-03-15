@@ -15,7 +15,7 @@ const model = genAI.getGenerativeModel({
 export const SolutionResolvers = {
     Query: {
         getSolution: async (_: unknown, { problemId }: { problemId: string }) => {
-            var solution = await prisma.solution.findFirst({
+            let solution = await prisma.solution.findFirst({
                 where: { problemId },
                 include: { answers: true },
             });

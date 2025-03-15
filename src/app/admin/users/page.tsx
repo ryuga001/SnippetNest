@@ -15,7 +15,7 @@ import SectionWrapper from "@/hoc/sectionWrapper";
 import { GET_ALL_USER } from "@/lib/services";
 import { useQuery } from "@apollo/client";
 import { User } from "@prisma/client";
-import { Pencil, PlusCircle, Trash2, Users } from "lucide-react";
+import { Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
 
 export default function UsersPage() {

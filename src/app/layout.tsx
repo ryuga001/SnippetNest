@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import Footer from "@/components/footer";
 import Navbar from "@/components/Navbar";
+import ApolloProviderWrapper from "@/lib/ApolloClient/ApolloClientWrapper"; // Client component
 import StoreProvider from "@/redux/storeProvider";
 import { Toaster } from "sonner";
-import ApolloProviderWrapper from "@/lib/ApolloClient/ApolloClientWrapper"; // Client component
 import "./globals.css";
-import Footer from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gray-200`}>
-        <ApolloProviderWrapper> {/* Apollo in a client wrapper */}
+    <html lang="en" className="overflow-y-auto hide-scrollbar">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased  min-h-screen bg-gray-200`}>
+        <ApolloProviderWrapper>
           <StoreProvider>
             <Navbar />
-            <main className="py-16">
+            <main className="py-16  min-h-screen">
+
               <Toaster richColors position="top-center" />
               {children}
             </main>
