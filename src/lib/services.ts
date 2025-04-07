@@ -3,8 +3,8 @@ import { gql } from "@apollo/client";
 // ** USER ** //
 
 export const REGISTER_USER = gql`
-  mutation RegisterUser($username: String!, $email: String!, $password: String!) {
-    registerUser(username: $username, email: $email, password: $password) {
+  mutation RegisterUser($username: String!, $email: String!, $password: String! , $avatar: String) {
+    registerUser(username: $username, email: $email, password: $password , avatar: $avatar) {
       success
       message
       user {
@@ -66,12 +66,77 @@ query{
      id ,
      username,
      avatar,
-     email 
+     email,
+     role
    }  
  }
 }`
 
+export const UPDATE_USER = gql`
+mutation UpdateUser($updateUserId: ID!, $input: UpdateUserInput!) {
+  updateUser(id: $updateUserId, input: $input) {
+    
+    success,
+    message,
+    user {
+      id,
+      username,
+      avatar,
+      email,
+      role,
+      coverImage,
+      bio,
+      points,
+      social {
+        github,
+        linkedin,
+        twitter
+      },
+    }
+  }
+}`
+export const UPDATE_USER_SOCIAL = gql`
+  mutation UpdateUserSocial($input: UpdateUserSocialInput!) {
+  updateUserSocial(input: $input) {
+    success,
+    message 
+  }
+}
+`
 
+export const GET_USER_BY_ID = gql`
+query GetUserById($id: ID!) {
+  getUserById(id: $id) {
+    success,
+    message,
+    user {
+      id,
+      username,
+      avatar,
+      email,
+      role,
+      coverImage,
+      bio,
+      points,
+      social {
+        github,
+        linkedin,
+        twitter
+      },
+      stats {
+        contributions,
+        problemSolved,
+        rank
+      }
+      achievements {
+        id,
+        title,
+        date,
+      }
+    }
+  }
+}
+`
 
 
 //  ** PROBLEM ** //
@@ -277,6 +342,28 @@ query GetDashboardData {
       tagDistribution {
         name
         count
+      }
+    }
+  }
+}
+`
+
+// LeaderBoard 
+
+export const GET_LEADERBOARD = gql`
+query GetLeaderBoardUsers {
+  getLeaderBoardUsers {
+    success
+    message
+    users {
+      id ,
+      username ,
+avatar ,
+      points ,
+      stats {
+      rank ,
+      contributions ,
+      problemSolved
       }
     }
   }

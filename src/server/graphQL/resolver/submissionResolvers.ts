@@ -63,24 +63,30 @@ export const submissionResolvers = {
                 throw new Error("Unable to Create Submission");
             }
 
-            // update the points of user if submission is status is accepted and there is no previously accepted submission 
+         
             const value = (newSubmission.problem.difficulty === "HARD") ? 8 : ((newSubmission.problem.difficulty === 'MEDIUM') ? 4 : 2);
-            const existingAcceptedSubmission = await prisma.submission.findFirst({
-                where: {
-                    problemId: input.problemId,
-                    authorId: context.user.id,
-                    status: true,
-                },
-            });
+            // const existingAcceptedSubmission = await prisma.submission.findFirst({
+            //     where: {
+            //         problemId: input.problemId,
+            //         authorId: context.user.id,
+            //         status: true,
+            //     },
+            // });
 
 
-            if (input.status === true && !existingAcceptedSubmission) {
+            if (input.status === true ) {
                 await prisma.user.update({
                     where: { id: context.user.id },
                     data: {
-                        points: { increment: value },
+                        points: { increment: value},
                     },
                 });
+                await prisma.stats.update({
+                    where : {userId : context.user.id} , 
+                    data : {
+                        problemSolved : {increment : 1},
+                    }
+                })
             }
             return {
                 success: true,

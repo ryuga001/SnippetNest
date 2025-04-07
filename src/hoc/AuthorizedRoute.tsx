@@ -1,12 +1,10 @@
-import React from 'react'
+import React from "react";
 
 const AuthorizedRoute = () => {
-    return (
-        <div>AuthorizedRoute</div>
-    )
-}
+  return <div>AdminRoutes</div>;
+};
 
-export default AuthorizedRoute
+export default AuthorizedRoute;
 
 // "use client";
 

@@ -45,6 +45,7 @@ export const userTypeDefs = `#graphql
     getUserById(id: ID!): getUserByIdResponse!
     achievements(userId: ID!): [Achievement!]!
     GetMe: GetMeResponse!
+    getLeaderBoardUsers: GetAllUserResponse!
   }
 
   type Mutation {
@@ -63,13 +64,20 @@ export const userTypeDefs = `#graphql
     updateUser(id: ID!, input: UpdateUserInput!):updateUserResponse!
     logoutUser:logoutUserResponse!
     deleteUser(id:ID!) : deleteUserResponse!
+    updateUserSocial( input: UpdateUserSocialInput!):updateUserSocialResponse!
   }
   # reponses types 
+  input UpdateUserSocialInput {
+    github : String
+    linkedin : String
+    twitter : String
+  }
   input UpdateUserInput {
     avatar: String
     coverImage: String
     bio: String
     points: Int
+    role : String 
   }
   type registerUserResponse {
     success : Boolean!,
@@ -108,5 +116,10 @@ export const userTypeDefs = `#graphql
     success: Boolean!
     message: String!
     user: User!
+  }
+  type updateUserSocialResponse {
+    success :Boolean!
+    message : String!
+    social : Social!
   }
 `;
